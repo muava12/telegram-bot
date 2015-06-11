@@ -28,7 +28,7 @@ local Wikipedia = {
     srlimit = 20,
 	 format = "json",
   },
-  default_lang = "en",
+  default_lang = "id",
 }
 
 function Wikipedia:getWikiServer(lang)
@@ -102,12 +102,12 @@ function Wikipedia:wikintro(text, lang)
     if page and page.extract then
       return text..": "..page.extract
     else
-      local text = "Extract not found for "..text
+      local text = "Pencarian dengan kata kunci \""..text.."\" tidak ditemukan"
       text = text..'\n'..table.concat(wikiusage, '\n')
       return text
     end
   else
-    return "Sorry an error happened"
+    return "Aduh maap error, coba lagi atau ganti kata kunci."
   end
 end
 

@@ -1,15 +1,16 @@
 do
 
 function run(msg, matches)
-  return 'Telegram Bot '.. VERSION .. [[ 
-  Checkout http://git.io/6jdjGg
-  GNU GPL v2 license.]]
+  return 'JarvisBot '.. JarvisVersion ..[[ 
+  Based on Telegram Bot ]].. VERSION ..[[ 
+  maintened by @muafa]]
 end
 
 return {
   description = "Shows bot version", 
   usage = "!version: Shows bot version",
   patterns = {
+    "^.version$",
     "^!version$"
   }, 
   run = run 
