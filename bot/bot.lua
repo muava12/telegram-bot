@@ -6,6 +6,11 @@ require("./bot/utils")
 
 VERSION = '0.13.0'
 
+-- Variabel #muafa
+
+JarvisVersion = 'v1.0'
+CMD = '!'
+
 -- This function is called when tg receive a msg
 function on_msg_receive (msg)
   if not started then
