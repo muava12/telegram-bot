@@ -18,7 +18,6 @@ local tableProvince = {
 function read_xml_file(xUrl)
   file = download_to_file(xUrl)
   local cb_extra = {file_path=file}
-  print('~Downloaded: '..file)
 
   -- from: http://www.codedisqus.com/CxVqqkqjeW/how-to-load-text-file-into-sort-of-tablelike-variable-in-lua.html
   local f = io.open(file)
@@ -71,13 +70,10 @@ function parseGetCityCode(c)
   local parsedXml = xml:ParseXmlText(getXml)
   local result0 = ''
   local i = 1
-  print(parsedXml.Cuaca.Isi.Row[i])
   while parsedXml.Cuaca.Isi.Row[i] ~= nil and result0 ~= c do
     result0 = string.lower(parsedXml.Cuaca.Isi.Row[i].Kota:value())
     result0 = result0:gsub("%s+", "") --  remove spaces
-
     i = i + 1
-    print('*')
   end
   i = i - 1  -- TODO: perlu ada perbaikan disini supaya gak pake di kurang lagi
   if result0 == c then
@@ -112,9 +108,7 @@ end
 local function run(msg, matches)
   local receiver = get_receiver(msg)
   local url = 'http://data.bmkg.go.id/cuaca_jabodetabek_2.xml'
-  print(matches[1])
-  -- local ext = matches[2]
-
+  
   if matches[1] == CMD..'bmkg' then
     url = urlProv('06') -- kode provinsi (riau = 06) lihat di: http://bmkg.go.id/BMKG_Pusat/Informasi_Cuaca/Prakiraan_Cuaca/Prakiraan_Cuaca_Indonesia.bmkg
     getXml = read_xml_file(url)
@@ -123,14 +117,9 @@ local function run(msg, matches)
     getXml = read_xml_file(url)
     cuaca = parseJabodetabek(8)
   else  
-    print("OK_1 ") -- debug
     message = splitText(matches[1]) 
-    print('~message = '..table.concat(message,"", 2))   --  from: http://lua.gts-stolberg.de/en/table.php
-    print('~message[1] = '..message[1]) -- debug
-    if message[2] ~= nil then print('~message[2] = '..message[2]) end
     local i = 1
     while message[1] ~= tableProvince[i] and i <= 33 do
-      print(tableProvince[i])
       i = i + 1
     end
     if  message[1] == tableProvince[i] then
@@ -144,10 +133,9 @@ local function run(msg, matches)
       url = urlProv(kodeProv) 
       getXml = read_xml_file(url)
       if message[2] ~= nil then
-        local messageCity = table.concat(message,"", 2)
+        local messageCity = table.concat(message,"", 2) --  from: http://lua.gts-stolberg.de/en/table.php
         if parseGetCityCode(messageCity) ~= nil then
           local nomor = parseGetCityCode(messageCity)
-          print(nomor) -- debug
           cuaca = parseOtherCity(nomor)
         else
           cuaca = "Nama KOTA tidak terdaftar, mungkin salah ejaan atau salah ketik. Silahkan coba lagi."
@@ -160,12 +148,9 @@ local function run(msg, matches)
     end
   end
 
-  --print('send_file\n'..file)
-  --send_file(receiver, file, rmtmp_cb, cb_extra)
-
   if file ~= nil then
       os.remove(file)
-      print("~Removed: " .. file)
+      print("Removed: " .. file)
   end
 
   return cuaca
@@ -177,7 +162,6 @@ return {
           CMD.."bmkg nama_provinsi : menampilkan cuaca provinsi\n"..
           CMD.."bmkg nama_provinsi nama_kota : menampilkan cuaca provinsi dan kota\n",
   patterns = {
-    -- "(https?://[%w-_%.%?%.:/%+=&]+%.(xml))$"
     "^"..CMD.."bmkg$",
     --"^"..CMD.."bmkg (prov) (.*)$",
     "^"..CMD.."bmkg (.*)$"
