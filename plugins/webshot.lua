@@ -39,18 +39,21 @@ local function run(msg, matches)
    if find then
       local imgurl = base .. find
       local receiver = get_receiver(msg)
-      send_photo_from_url(receiver, imgurl)
+      local file = download_to_file(imgurl)
+      local cb_extra = {file_path=file}
+      
+      send_document(receiver, file, rmtmp_cb, cb_extra)
+      
    end
 end
-
 
 return {
    description = "Send an screenshot of a website.",
    usage = {
-      "!webshot [url]: Take an screenshot of the web and send it back to you."
+      "!webshot2 [url]: Take an screenshot of the web and send it back to you."
    },
    patterns = {
-      "^!webshot (https?://[%w-_%.%?%.:/%+=&]+)$",
+      "^!webshot2 (https?://[%w-_%.%?%.:/%+=&]+)$",
    },
    run = run
 }
